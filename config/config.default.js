@@ -14,7 +14,7 @@ module.exports = (appInfo) => {
 
 	// use for cookie sign key, should change to your own and keep security
 	config.keys = appInfo.name + '_1609383545509_3803'
-
+  config.salt = '&%!!#)';
 	// add your middleware config here
 	config.middleware = []
 
@@ -22,6 +22,29 @@ module.exports = (appInfo) => {
 	const userConfig = {
 		// myAppName: 'egg',
 	}
+  config.session = {
+        key: 'EGG_SESS',
+        maxAge: 24 * 3600 * 1000, // 1 天
+        // maxAge:10,
+        httpOnly: true,
+        encrypt: true,
+    };
+	// config/config.default.js
+	// config.validate = {
+		// convert: false,
+		// validateRoot: false,
+	// }
+  config.validatePlus = {
+        resolveError(ctx, errors) {
+            if (errors.length) {
+                ctx.type = 'json';
+                ctx.body = {
+                    code: 0,
+                    msg: errors[0].message,
+                };
+            }
+        }
+    };
 	config.sequelize = {
 		dialect: 'mysql', // support: mysql, mariadb, postgres, mssql
 		database: 'shop',
@@ -35,9 +58,9 @@ module.exports = (appInfo) => {
 		// exclude: 'index.js', // ignore `app/${baseDir}/index.js` when load models, support glob and array
 		// more sequelize options
 		define: {
-		    freezeTableName: true, // 阻止数据表名变为复数
-		    timestamps: false // 阻止model生成createAt和updateAt字段
-		}
+			freezeTableName: true, // 阻止数据表名变为复数
+			timestamps: false, // 阻止model生成createAt和updateAt字段
+		},
 	}
 	config.swaggerdoc = {
 		dirScanner: './app/controller/api', // 配置自动扫描的控制器路径。
@@ -72,46 +95,47 @@ module.exports = (appInfo) => {
 		routerMap: true, // 是否启用自动生成路由，默认 true (启用)。
 		enable: true, // 默认 true (启用)。
 	}
-  config.cors = {
-        origin: '*',
-        allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
-    };
-    config.multipart = {
-            mode: 'file',
-            whitelist: [
-                '.jpg', '.jpeg', // image/jpeg
-                '.png', // image/png, image/x-png
-                '.gif', // image/gif
-                '.bmp', // image/bmp
-                '.wbmp', // image/vnd.wap.wbmp
-                '.webp',
-                '.psd',
-                '.pdf',
-                '.doc',
-                '.docx',
-                'xls',
-                'xlsx',
-                // tar
-                '.zip',
-                '.gz', '.tgz', '.gzip',
-                // video
-                '.mp3',
-                '.mp4',
-                '.avi',
-            ], //上传文件的扩展名
-            fileSize: '10mb', //上传文件大小
-            fileExtensions: [
-
-                ] // 自定义额外扩展
-        }
-        //安全
-    config.security = {
-        csrf: {
-            enable: false,
-            ignoreJSON: true
-        },
-        // domainWhiteList: ['http://127.0.0.1:7001']
-    };
+	config.cors = {
+		origin: '*',
+		allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
+	}
+	config.multipart = {
+		mode: 'file',
+		whitelist: [
+			'.jpg',
+			'.jpeg', // image/jpeg
+			'.png', // image/png, image/x-png
+			'.gif', // image/gif
+			'.bmp', // image/bmp
+			'.wbmp', // image/vnd.wap.wbmp
+			'.webp',
+			'.psd',
+			'.pdf',
+			'.doc',
+			'.docx',
+			'xls',
+			'xlsx',
+			// tar
+			'.zip',
+			'.gz',
+			'.tgz',
+			'.gzip',
+			// video
+			'.mp3',
+			'.mp4',
+			'.avi',
+		], //上传文件的扩展名
+		fileSize: '10mb', //上传文件大小
+		fileExtensions: [], // 自定义额外扩展
+	}
+	//安全
+	config.security = {
+		csrf: {
+			enable: false,
+			ignoreJSON: true,
+		},
+		// domainWhiteList: ['http://127.0.0.1:7001']
+	}
 	return {
 		...config,
 		...userConfig,

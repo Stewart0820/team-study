@@ -17,4 +17,13 @@ module.exports = {
     enable: true,
     package: 'egg-cors',
   },
+  // config/plugin.js
+// validate : {
+//   enable: true,
+//   package: 'egg-validate',
+// }
+validatePlus :{
+    enable: true,
+    package: 'egg-validate-plus',
+  },
 };

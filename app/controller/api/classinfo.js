@@ -1,19 +1,11 @@
 'use strict';
-/**
- * @controller 班级数据接口
- */
+
 const Controller = require('egg').Controller;
 const {
     RESULT
 } = require('../../util/util')
 class ClassinfoController extends Controller {
-    /**
-     * @summary 通过部门获取班级数据
-     * @description 通过部门获取班级数据
-     * @router post /api/classinfo/queryclassinfosbydepartid
-     * @request body integer depart_id
-     * @response 200 RESULT
-     */
+  
     async queryClassinfosByDepartId() {
         const {
             ctx

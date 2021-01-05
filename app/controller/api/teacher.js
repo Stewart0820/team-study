@@ -4,17 +4,9 @@ const Controller = require('egg').Controller;
 const {
     RESULT
   } = require('../../util/util')
-/**
- * @controller 教师数据接口
- */
+
 class TeacherController extends Controller {
-   /**
-   * @summary 教师登录
-   * @description 教师登录
-   * @router post /api/teacher/login
-   * @request body teacher
-   * @response 200 RESULT
-   */  
+
   async login() {
       const {ctx,app}=this;
       const {teacher_no,password}=ctx.request.body;

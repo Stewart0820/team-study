@@ -11,17 +11,9 @@ const {
 } = require('../../util/util')
 var Minio = require('minio')
 
-/**
- * @controller 上传文件数据接口
- */
+
 class UploadController extends Controller {
-  /**
-   * @summary 通过ajax上传图片
-   * @description 通过ajax上传图片,默认上传的图片格式：'.jpg', '.png', '.jpeg','.gif'
-   * @router post /api/file/uploadimagebyajax
-   * @request formData file
-   * @response 200 RESULT
-   */
+
   async uploadImageByAjax() {
     const {
       ctx
@@ -61,13 +53,7 @@ class UploadController extends Controller {
       ctx.body = RESULT;
     }
   }
-  /**
-   * @summary 通过ajax上传文件
-   * @description 通过ajax上传文件,默认上传的文件格式：['.pdf', '.zip', '.docx','.doc','.xls','.xlsx']
-   * @router post /api/file/uploadfilebyajax
-   * @request formData file
-   * @response 200 RESULT
-   */
+
   async uploadFileByAjax() {
     const {
       ctx

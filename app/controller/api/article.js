@@ -1,17 +1,9 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-/**
- * @controller 文章数据接口
- */
+
 class ArticleController extends Controller {
-    /**
-   * @summary 获取公开文章
-   * @description 获取公开文章
-   * @router get /api/articles/open
-   * @request query cat_id
-   * @response 200 
-   */
+
     async getOpenArticles() {
         const {
             ctx
@@ -28,13 +20,7 @@ class ArticleController extends Controller {
         }
         ctx.body = articles;
     }
-   /**
-    *@summary 获取文章实例
-   * @description 获取文章实例
-   * @router get /api/article/one
-   * @request query integer id 文章的编号
-   * @response 200 
-   */
+
     async getSingle(){
         const {ctx}=this;
         const {

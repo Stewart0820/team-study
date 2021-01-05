@@ -27,7 +27,7 @@ module.exports = app => {
   });
 
   Model.associate = function() {
-
+        
   }
 
   return Model;

@@ -1,7 +1,5 @@
 'use strict';
-/**
- * @controller 学生数据接口
- */
+
 const Controller = require('egg').Controller;
 
 const {
@@ -10,13 +8,6 @@ const {
 
 class StudentController extends Controller {
 
-    /**
-     * @summary 通过学生部门编号获取专业和班级
-     * @description 通过学生部门编号获取专业和班级
-     * @router get /api/student/depart
-     * @request query integer depart_id
-     * @response 200 RESULT
-     */
     async findMajorAndClassinfoByDepartId() {
         const {
             ctx
@@ -45,13 +36,7 @@ class StudentController extends Controller {
 
     }
 
-    /**
-     * @summary 学生登录
-     * @description 学生登录
-     * @router post /api/student/login
-     * @request body student
-     * @response 200 RESULT
-     */
+
     async login() {
         const {
             ctx
@@ -72,13 +57,7 @@ class StudentController extends Controller {
         }
         ctx.body = RESULT;
     }
-    /**
-     * @summary 通过部门获取数据
-     * @description 通过部门获取数据
-     * @router post /api/student/querystudentbydepartid
-     * @request body integer depart_id
-     * @response 200 RESULT
-     */
+
     async queryStudentsByDepartId() {
         const {
             ctx
@@ -105,13 +84,7 @@ class StudentController extends Controller {
 
         ctx.body = RESULT;
     }
-    /**
-     * @summary 通过班级获取学生数据
-     * @description 通过班级获取学生数据
-     * @router post /api/student/querystudentsbyclassmateid
-     * @request body student
-     * @response 200 RESULT
-     */
+
     async queryStudentsByClassmateId() {
         const {
             ctx
