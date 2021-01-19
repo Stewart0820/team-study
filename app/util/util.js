@@ -17,6 +17,10 @@ module.exports = {
 			return arr.indexOf(item) === index
 		})
 	},
+	// 数组去重的方法
+	unique(createList) {
+		return Array.from(new Set(createList))
+	},
 	/**
 	 * 生成六位随机数
 	 *

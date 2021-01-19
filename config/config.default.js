@@ -1,5 +1,4 @@
 /* eslint valid-jsdoc: "off" */
-
 'use strict'
 
 /**
@@ -48,10 +47,10 @@ module.exports = (appInfo) => {
 	config.sequelize = {
 		dialect: 'mysql', // support: mysql, mariadb, postgres, mssql
 		database: 'shop',
-		host: '47.106.220.247',
+		host: '127.0.0.1',
 		port: 3306,
 		username: 'root',
-		password: 'wuzongbo751130',
+		password: '123456',
 		timezone: '+08:00', // 保存为本地时区
 		// delegate: 'myModel', // load all models to `app[delegate]` and `ctx[delegate]`, default to `model`
 		// baseDir: 'my_model', // load all files in `app/${baseDir}` as models, default to `model`
@@ -63,7 +62,7 @@ module.exports = (appInfo) => {
 		},
 	}
 	config.swaggerdoc = {
-		dirScanner: './app/controller/api', // 配置自动扫描的控制器路径。
+		dirScanner: './app/controller', // 配置自动扫描的控制器路径。
 		// 接口文档的标题，描述或其它。
 		apiInfo: {
 			title: '双创教育中心服务接口', // 接口文档的标题。

@@ -32,7 +32,6 @@ class AdminController extends Controller {
 
         SUCCESS.msg='登录成功'
         ctx.body=SUCCESS;
-      
       }
       else{
         ERROR.msg='邮箱或者密码错误';

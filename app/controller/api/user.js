@@ -4,7 +4,7 @@ const Controller = require('egg').Controller
 const { ERROR, SUCCESS, getTimeStamp } = require('../../util/util')
 const crypto = require('crypto')
 /**
- * @controller 用户接口
+ * @controller 前台用户接口
  */
 class UserController extends Controller {
   /**
