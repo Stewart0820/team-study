@@ -1,6 +1,7 @@
 'use strict'
-const { getTimeStamp, ERROR, SUCCESS } = require('../../util/util')
+const { getTimeStamp, ERROR, SUCCESS, RESULT } = require('../../util/util')
 const Controller = require('egg').Controller
+const {INDEX,EDIT,ONE,ADD,ADDSECOND } = require('./base')
 
 /**
  * @controller 权限接口
@@ -14,9 +15,9 @@ class PermissionController extends Controller {
 	 */
 	async index() {
 		const { ctx } = this
-		let data = await ctx.service.permission.all()
-		ctx.body = data
-	}
+    let base = ctx.service.permission
+    ctx.body = await INDEX(base)
+  }
 	/**
 	 * @summary 查询一个权限
 	 * @description 根据id查询权限信息
@@ -27,54 +28,52 @@ class PermissionController extends Controller {
 	async one() {
 		const { ctx } = this
 		const { id } = ctx.query
-		let data = await ctx.service.permission.one(id)
-		ctx.body = data
+    let base = ctx.service.permission
+		ctx.body = await ONE(base,id)
 	}
 	/**
 	 * @summary 修改权限
 	 * @description 修改一个权限信息
 	 * @router post /admin/permission/edit
-	 * @request body editFirstPermission
+	 * @request body editPermission
 	 * @response 200 RESULT
 	 */
 	async edit() {
 		const { ctx } = this
 		let data = ctx.request.body
-
-		const id = data.id
-		const enable = data.enable
-
-		let flagOne = await ctx.service.permission.edit(id, data)
-		let flagTwo = await ctx.service.permission.updateSecondEnable(
-			id,
-			enable
-		)
-
-		if (flagOne && flagTwo) {
-			SUCCESS.msg = '修改成功'
-			ctx.body = SUCCESS
-		} else {
-			ctx.body = ERROR
-		}
+    let base = ctx.service.permission
+    let result = await EDIT(base,data)
+    ctx.body = result
 	}
 	/**
-	 * @summary 添加权限
-	 * @description 添加一个权限信息
-	 * @router post /admin/permission/add
-	 * @request body addPermission
+	 * @summary 添加一级权限
+	 * @description 添加一级权限信息  
+	 * @router post /admin/permission/addFirst
+	 * @request body addFirstPermission
 	 * @response 200 RESULT
 	 */
-	async add() {
+	async addFirst() {
 		const { ctx } = this
 		let data = ctx.request.body
-		console.log(data)
-		let result = await ctx.service.permission.add(data)
-		if (result) {
-			SUCCESS.msg = '添加成功'
-			ctx.body = SUCCESS
-		} else {
-			ctx.body = ERROR
-		}
+    let base = ctx.service.permission
+    let result = await ADD(base,data)
+    ctx.body = result
+	}
+  /**
+	 * @summary 添加二级权限
+	 * @description 添加二级权限信息
+	 * @router post /admin/permission/addSecond
+	 * @request number id  一级权限的id
+	 * @request body addSecondPermission   二级权限的数据
+	 * @response 200 RESULT
+	 */
+	async addSecond() {
+		const { ctx } = this
+    const {id} =ctx.query
+		let data = ctx.request.body
+    let base = ctx.service.permission
+    let result = await ADDSECOND(base,id,data)
+    ctx.body = result
 	}
 	/**
 	 * @summary 删除权限
@@ -106,7 +105,7 @@ class PermissionController extends Controller {
 		for (let i = 0; i < permissions.length; i++) {
 			let permissionId = permissions[i].permission_id
 				.split(',')
-				.map(Number) 
+				.map(Number)
 			let length = permissionId.length
 			for (let j = 0; j < deleteId.length; j++) {
 				permissionId.remove(deleteId[j])
@@ -125,7 +124,16 @@ class PermissionController extends Controller {
 				permissionIds
 			)
 		}
-		await ctx.service.permission.delete(id)
+		let result = await ctx.service.permission.delete(id)
+		if (result) {
+			RESULT.code = 1
+			RESULT.msg = '删除成功'
+			RESULT.status = 200
+		} else {
+			RESULT.code = 0
+			RESULT.msg = '删除失败'
+		}
+		ctx.body = RESULT
 	}
 }
 // 数组里面删除指定的元素的remove方法

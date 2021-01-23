@@ -1,5 +1,5 @@
 module.exports = {
-  editFirstPermission:{
+  editPermission:{
     id:{
       type:'number',
       required: true,
@@ -21,7 +21,7 @@ module.exports = {
       example:1
     }
   },
-  addPermission:{
+  addFirstPermission:{
     router_name:{
       type:'string',
       required: true,
@@ -37,10 +37,22 @@ module.exports = {
       required: true,
       example:1
     },
-    pid:{
+  },
+  addSecondPermission:{
+    router_name:{
+      type:'string',
+      required: true,
+      example:'文章管理1'
+    },
+    router_code:{
+      type:'string',
+      required: true,
+      example:'/admin/article'
+    },
+    enable:{
       type:'number',
-      required: false,
-      example:14
-    }
+      required: true,
+      example:1
+    },
   }
 }

@@ -73,7 +73,7 @@ class PermissionService extends Service {
 	async one(id) {
 		const { ctx } = this
 		let options = {
-			attributes: ['id', 'router_name', 'router_code', 'enable'],
+			attributes: ['id', 'router_name', 'router_code', 'enable','pid'],
 			where: {
 				id: id,
 			},
@@ -161,7 +161,7 @@ class PermissionService extends Service {
 		)
 	}
   /**
-   *添加
+   *添加一级
    *
    * @param {*} body
    * @return {*} 
