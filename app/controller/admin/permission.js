@@ -1,7 +1,7 @@
 'use strict'
 const { getTimeStamp, ERROR, SUCCESS, RESULT } = require('../../util/util')
 const Controller = require('egg').Controller
-const {INDEX,EDIT,ONE,ADD,ADDSECOND } = require('./base')
+const { EDIT, ADD, ADDSECOND,DELETEUP } = require('./base')
 
 /**
  * @controller 权限接口
@@ -15,9 +15,8 @@ class PermissionController extends Controller {
 	 */
 	async index() {
 		const { ctx } = this
-    let base = ctx.service.permission
-    ctx.body = await INDEX(base)
-  }
+		ctx.body = await ctx.service.permission.twoLevelData()
+	}
 	/**
 	 * @summary 查询一个权限
 	 * @description 根据id查询权限信息
@@ -28,8 +27,7 @@ class PermissionController extends Controller {
 	async one() {
 		const { ctx } = this
 		const { id } = ctx.query
-    let base = ctx.service.permission
-		ctx.body = await ONE(base,id)
+		ctx.body = await ctx.service.permission.one(id)
 	}
 	/**
 	 * @summary 修改权限
@@ -41,13 +39,13 @@ class PermissionController extends Controller {
 	async edit() {
 		const { ctx } = this
 		let data = ctx.request.body
-    let base = ctx.service.permission
-    let result = await EDIT(base,data)
-    ctx.body = result
+		let base = ctx.service.permission
+		let result = await EDIT(base, data)
+		ctx.body = result
 	}
 	/**
 	 * @summary 添加一级权限
-	 * @description 添加一级权限信息  
+	 * @description 添加一级权限信息
 	 * @router post /admin/permission/addFirst
 	 * @request body addFirstPermission
 	 * @response 200 RESULT
@@ -55,11 +53,11 @@ class PermissionController extends Controller {
 	async addFirst() {
 		const { ctx } = this
 		let data = ctx.request.body
-    let base = ctx.service.permission
-    let result = await ADD(base,data)
-    ctx.body = result
+		let base = ctx.service.permission
+		let result = await ADD(base, data)
+		ctx.body = result
 	}
-  /**
+	/**
 	 * @summary 添加二级权限
 	 * @description 添加二级权限信息
 	 * @router post /admin/permission/addSecond
@@ -69,11 +67,11 @@ class PermissionController extends Controller {
 	 */
 	async addSecond() {
 		const { ctx } = this
-    const {id} =ctx.query
+		const { id } = ctx.query
 		let data = ctx.request.body
-    let base = ctx.service.permission
-    let result = await ADDSECOND(base,id,data)
-    ctx.body = result
+		let base = ctx.service.permission
+		let result = await ADDSECOND(base, id, data)
+		ctx.body = result
 	}
 	/**
 	 * @summary 删除权限
@@ -85,46 +83,18 @@ class PermissionController extends Controller {
 	async delete() {
 		const { ctx } = this
 		const { id } = ctx.query
-		const pid = await ctx.service.permission.findPid(id)
-		//需要删除的二级权限id
-		let deleteId = []
-		// 父类
-		if (pid[0].pid === 0) {
-			let secondId = await ctx.service.permission.secondAll(id)
-			for (let i = 0; i < secondId.length; i++) {
-				// 删除二级
-				let flag = await ctx.service.permission.delete(secondId[i].id)
-				deleteId.push(secondId[i].id)
-			}
-		} else {
-			deleteId.push(id)
+    let base = ctx.service.permission
+    let upBase =ctx.service.rolePermission
+		const exist = await base.exist(id)
+		if (exist.length === 0) {
+			RESULT.code = 0
+			RESULT.msg = '该权限不存在'
+			ctx.body = RESULT
+			return 
 		}
-		// 删除二级的role_permission删除
-		let permissions = await ctx.service.rolePermission.findPermissionId()
-		let ids = []
-		for (let i = 0; i < permissions.length; i++) {
-			let permissionId = permissions[i].permission_id
-				.split(',')
-				.map(Number)
-			let length = permissionId.length
-			for (let j = 0; j < deleteId.length; j++) {
-				permissionId.remove(deleteId[j])
-			}
-			if (length != permissionId.length) {
-				let h = getId()
-				const id = permissions[i].id
-				ids[h - 1] = { id, permissionId }
-			}
-		}
-		// 更新role_permission
-		for (const value of ids) {
-			let permissionIds = value.permissionId.toString()
-			await ctx.service.rolePermission.updatePermissionId(
-				value.id,
-				permissionIds
-			)
-		}
-		let result = await ctx.service.permission.delete(id)
+    await DELETEUP(base,upBase,id,'permission_id')
+
+    let result = await base.delete(id)
 		if (result) {
 			RESULT.code = 1
 			RESULT.msg = '删除成功'
@@ -136,23 +106,6 @@ class PermissionController extends Controller {
 		ctx.body = RESULT
 	}
 }
-// 数组里面删除指定的元素的remove方法
-Array.prototype.indexOf = function (val) {
-	for (var i = 0; i < this.length; i++) {
-		if (this[i] == val) return i
-	}
-	return -1
-}
-Array.prototype.remove = function (val) {
-	var index = this.indexOf(val)
-	if (index > -1) {
-		this.splice(index, 1)
-	}
-}
-let getId = (function () {
-	let i = 0
-	return function () {
-		return ++i
-	}
-})()
+
+
 module.exports = PermissionController

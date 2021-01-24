@@ -12,6 +12,7 @@ module.exports = {
 		code: 0,
 		msg: 'result',
 	},
+  // 数组去重的方法
 	unique(arr) {
 		return arr.filter(function (item, index, arr) {
 			return arr.indexOf(item) === index

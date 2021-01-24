@@ -1,20 +1,22 @@
 'use strict'
 
 const Service = require('egg').Service
+const BaseService = require('./base')
 
-class RolePermissionService extends Service {
+class RolePermissionService extends BaseService {
+  constructor(Context){
+    super('RolePermission',Context)
+  }
 	/**
-	 *  查询所有的role_permission表中的权限
-	 *
-	 * @memberof RolePermissionService
-	 */
-	async findPermissionId() {
-		const { ctx } = this
-		return await ctx.model.RolePermission.findAll({
-			attributes: ['id', 'permission_id'],
-			raw: true,
-		})
-	}
+   *查询所有的role_permission表中的权限
+   *
+   * @return {*} 
+   * @memberof RolePermissionService
+   */
+  async all(){
+    let attribute=['id', 'permission_id']
+    return super.all(attribute)
+  }
 	/**
 	 *根据id更新permissionId
 	 *
