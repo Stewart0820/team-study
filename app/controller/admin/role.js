@@ -2,11 +2,16 @@
 
 const Controller = require('egg').Controller
 const { RESULT } = require('../../util/util')
-const {INDEX,EDIT,ONE } = require('./base')
+const BaseController = require('../common/base')
+const { Context } = require('egg')
+
 /**
  * @controller 角色接口
  */
-class RoleController extends Controller{
+class RoleController extends BaseController{
+  constructor(Context) {
+		super('role', Context)
+	}
   
   /**
 	 * @summary 查询所有的角色
@@ -15,8 +20,7 @@ class RoleController extends Controller{
 	 * @response 200 RESULT
 	 */
 	async index() {
-		const { ctx } = this
-    ctx.body = await INDEX(ctx.service.role)
+		return super.twoLevelData()
   }
 /**
 	 * @summary 查询一个角色
@@ -26,23 +30,18 @@ class RoleController extends Controller{
 	 * @response 200 RESULT
 	 */
 	async one() {
-		const { ctx } = this
-		const { id } = ctx.query
-		ctx.body = await ONE(ctx.service.role,id)
+		return super.one()
 	}
   /**
 	 * @summary 修改角色
 	 * @description 修改一个角色信息
 	 * @router post /admin/role/edit
-	 * @request body editRole
+   * @request query integer id 角色id
+	 * @request body role
 	 * @response 200 RESULT
 	 */
 	async edit() {
-		const { ctx } = this
-		let data = ctx.request.body
-    let base = ctx.service.role
-    let result = await EDIT(base,data)
-    ctx.body = result
+		return super.editOneLever()
 	}
 }
 module.exports = RoleController

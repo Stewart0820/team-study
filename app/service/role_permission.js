@@ -17,27 +17,6 @@ class RolePermissionService extends BaseService {
     let attribute=['id', 'permission_id']
     return super.all(attribute)
   }
-	/**
-	 *根据id更新permissionId
-	 *
-	 * @param {*} id
-	 * @param {*} permissionIds
-	 * @return {*}
-	 * @memberof RolePermissionService
-	 */
-	async updatePermissionId(id, permissionIds) {
-		const { ctx } = this
-		return await ctx.model.RolePermission.update(
-			{
-				permission_id: permissionIds,
-			},
-			{
-				where: {
-					id: id,
-				},
-			}
-		)
-	}
 }
 
 module.exports = RolePermissionService

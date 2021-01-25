@@ -9,34 +9,59 @@ class BaseService extends Service {
 		super(Context)
 		this.modelName = modelName
 	}
-  async all(attribute){
-    const { ctx } = this
-		let options = {
-			attributes: attribute,
-			raw: true,
-		}
-		return await ctx.model[this.modelName].findAll(options)
-  }
 	/**
-   *通过pid进行查询数据
-   *
-   * @param {*} attribute 查询的属性
-   * @param {*} pid 条件
-   * @return {*} 
-   * @memberof BaseService
-   */
-  async findByPid(attribute,pid) {
+	 *单表查询所有的数据
+	 *
+	 * @param {*} attribute
+	 * @return {*}
+	 * @memberof BaseService
+	 */
+	async all(attribute) {
 		const { ctx } = this
-		let options = {
-			attributes: attribute,
-			where: {
-				pid: pid,
-			},
-			raw: true,
+		let options
+		if (attribute == null) {
+			options = {
+				raw: true,
+			}
+		} else {
+			options = {
+				attributes: attribute,
+				raw: true,
+			}
 		}
 		return await ctx.model[this.modelName].findAll(options)
 	}
-  /**
+	/**
+	 *通过pid进行查询数据
+	 *
+	 * @param {*} attribute 查询的属性
+	 * @param {*} pid 条件
+	 * @return {*}
+	 * @memberof BaseService
+	 */
+	async findByPid(pid, attribute) {
+		const { ctx } = this
+		let options
+		if (attribute == null) {
+			options = {
+				where: {
+					pid: pid,
+				},
+				raw: true,
+			}
+		} else {
+			options = {
+				attributes: attribute,
+				where: {
+					pid: pid,
+				},
+				raw: true,
+			}
+		}
+
+		return await ctx.model[this.modelName].findAll(options)
+	}
+	/**
 	 *  通过id进行查询数据
 	 *
 	 * @param {*} attribute 属性
@@ -44,14 +69,24 @@ class BaseService extends Service {
 	 * @return {*}
 	 * @memberof BaseService
 	 */
-	async findById(attribute, id) {
+	async findById(id, attribute) {
 		const { ctx } = this
-		let options = {
-			attributes: attribute,
-			where: {
-				id: id,
-			},
-			raw: true,
+		let options
+		if (attribute == null) {
+			options = {
+				attributes: attribute,
+				where: {
+					id: id,
+				},
+				raw: true,
+			}
+		} else {
+			options = {
+				where: {
+					id: id,
+				},
+				raw: true,
+			}
 		}
 		return await ctx.model[this.modelName].findAll(options)
 	}
@@ -70,14 +105,11 @@ class BaseService extends Service {
 	async twoLevelData(firstAttr, secondAttr) {
 		const { ctx } = this
 		let data = []
-		const firstData = await this.findByPid(firstAttr,0)
+		const firstData = await this.findByPid(0, firstAttr)
 		if (firstData) {
 			for (let i = 0; i < firstData.length; i++) {
 				let first = firstData[i]
-				const secondData = await this.findByPid(
-					secondAttr,
-					first.id
-				)
+				const secondData = await this.findByPid(first.id, secondAttr)
 				data[i] = {
 					first,
 					secondData,
@@ -86,7 +118,7 @@ class BaseService extends Service {
 		}
 		return data
 	}
-	
+
 	/**
 	 *根据id修改权限信息
 	 *
@@ -94,44 +126,32 @@ class BaseService extends Service {
 	 * @return {*}
 	 * @memberof PermissionService
 	 */
-	async edit(id, data) {
+	async updateById(id, data) {
 		const { ctx } = this
-		return await ctx.model[this.modelName].update(
-			{
-				router_name: data.router_name,
-				router_code: data.router_code,
-				enable: data.enable,
+		return await ctx.model[this.modelName].update(data, {
+			where: {
+				id: id,
 			},
-			{
-				where: {
-					id: id,
-				},
-			}
-		)
+		})
 	}
-  /**
-	 *根据二级的id更改二级的enable
+	/**
+	 *根据pid修改数据
 	 *
 	 * @param {*} id
-	 * @param {*} enable
+	 * @param {*} data 修改的数据：必须是对象
 	 * @return {*}
 	 * @memberof PermissionService
 	 */
-	async updateSecondEnable(id, enable) {
+	async updateByPid(id, data) {
 		const { ctx } = this
-		return await ctx.model[this.modelName].update(
-			{
-				enable: enable,
+		return await ctx.model[this.modelName].update(data, {
+			where: {
+				pid: id,
 			},
-			{
-				where: {
-					pid: id,
-				},
-			}
-		)
+		})
 	}
 	/**
-	 *根据id查询某个权限是否存在
+	 *根据id查询某个id是否存在
 	 *
 	 * @param {*} id
 	 * @return {*}
@@ -144,9 +164,9 @@ class BaseService extends Service {
 		}
 		return await ctx.model[this.modelName].findAll(options)
 	}
-	
+
 	/**
-	 *添加一级
+	 *添加数据
 	 *
 	 * @param {*} body
 	 * @return {*}
@@ -157,7 +177,14 @@ class BaseService extends Service {
 		const result = await ctx.model[this.modelName].create(body)
 		return result
 	}
-	async delete(id) {
+ /**
+  *根据id删除数据
+  *
+  * @param {*} id
+  * @return {*} 
+  * @memberof BaseService
+  */
+ async delete(id) {
 		const { ctx } = this
 		let options = {
 			where: {
